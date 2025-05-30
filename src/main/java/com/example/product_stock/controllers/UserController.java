@@ -1,8 +1,10 @@
 package com.example.product_stock.controllers;
 
-import com.example.product_stock.dto.CreateProductRequestDTO;
+import com.example.product_stock.dto.CreateUserRequestDTO;
 import com.example.product_stock.dto.ProductResponseDTO;
-import com.example.product_stock.services.CreateProductService;
+import com.example.product_stock.dto.UserResponseDTO;
+import com.example.product_stock.entities.UserEntity;
+import com.example.product_stock.services.CreateUserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,21 +15,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/products")
-public class ProductController {
+@RequestMapping("/user")
+public class UserController {
 
     @Autowired
-    private CreateProductService createProductService;
+    private CreateUserService createUserService;
 
     @PostMapping("/")
-    public ResponseEntity<Object> create(@Valid @RequestBody CreateProductRequestDTO createProductRequestDTO){
+    public ResponseEntity<Object> create(@Valid @RequestBody CreateUserRequestDTO createUserRequestDTO) {
         try {
-            ProductResponseDTO result = createProductService.execute(createProductRequestDTO);
+            UserResponseDTO result = createUserService.execute(createUserRequestDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(result);
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-
     }
 
 }
