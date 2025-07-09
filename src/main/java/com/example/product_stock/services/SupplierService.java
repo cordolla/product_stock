@@ -5,6 +5,7 @@ import com.example.product_stock.dtos.SupplierRequestDTO;
 import com.example.product_stock.dtos.SupplierResponseDTO;
 import com.example.product_stock.entities.Supplier;
 import com.example.product_stock.entities.User;
+import com.example.product_stock.exceptions.SupplierFoundException;
 import com.example.product_stock.repositories.SupplierRepository;
 import com.example.product_stock.repositories.UserRepository;
 import org.modelmapper.ModelMapper;
@@ -42,12 +43,17 @@ public class SupplierService {
 
     @Transactional
     public SupplierResponseDTO createSupplier(SupplierRequestDTO requestDTO) {
+        if (supplierRepository.findByCpnjOrEmail(requestDTO.getCnpj(), requestDTO.getEmail()).isPresent()) {
+            throw new SupplierFoundException();
+        }
+
         Supplier supplier = modelMapper.map(requestDTO, Supplier.class);
         User user = userRepository.findById(requestDTO.getUserId())
-                        .orElseThrow(() -> new IllegalArgumentException("usuario não encontrado"));
+                .orElseThrow(() -> new IllegalArgumentException("usuario não encontrado"));
         supplier.setUser(user);
         supplier.setId(null);
         Supplier savedSupplier = supplierRepository.save(supplier);
+
         return modelMapper.map(savedSupplier, SupplierResponseDTO.class);
     }
 

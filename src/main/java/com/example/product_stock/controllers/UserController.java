@@ -8,30 +8,31 @@ import com.example.product_stock.repositories.UserRepository;
 import com.example.product_stock.services.UserService;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
+
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+    private final ModelMapper modelMapper;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private ModelMapper modelMapper;
-
-    @Autowired
-    private UserRepository userRepository;
+    public UserController(UserService userService, ModelMapper modelMapper, UserRepository userRepository) {
+        this.userService = userService;
+        this.modelMapper = modelMapper;
+        this.userRepository = userRepository;
+    }
 
     @PostMapping
     public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody UserRequestDTO userRequestDTO) {
-            UserResponseDTO createdUser = userService.createUser(userRequestDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
+        UserResponseDTO createdUser = userService.createUser(userRequestDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
     @GetMapping
@@ -43,16 +44,13 @@ public class UserController {
     @GetMapping("/{userId}/products")
     public ResponseEntity<List<ProductResponseDTO>> getProductByUser(@PathVariable UUID userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() ->  new RuntimeException("Usuario não encontrado"));
+                .orElseThrow(() -> new RuntimeException("Usuario não encontrado"));
 
         List<ProductResponseDTO> products = user.getSuppliers().stream()
                 .flatMap(supplier -> supplier.getProducts().stream())
-                .map(product -> {
-                    ProductResponseDTO dto = modelMapper.map(product, ProductResponseDTO.class);
-                    dto.setSupplierName(product.getSupplier().getName());
-                    return dto;
-                })
+                .map(product -> modelMapper.map(product, ProductResponseDTO.class))
                 .toList();
+
         return ResponseEntity.ok(products);
     }
 }

@@ -36,6 +36,12 @@ public class ModelMapperConfig {
                     mapper.skip(Product::setCategory);
                 });
 
+        modelMapper.createTypeMap(Product.class, ProductResponseDTO.class)
+                        .addMappings(mapper -> {
+                            mapper.map(src -> src.getSupplier().getName(), ProductResponseDTO::setSupplierName);
+                            mapper.map(src -> src.getCategory().getName(), ProductResponseDTO::setCategoryName);
+                        });
+
         modelMapper.createTypeMap(Supplier.class, SupplierDTO.class);
         modelMapper.createTypeMap(SupplierRequestDTO.class, Supplier.class);
         modelMapper.createTypeMap(Supplier.class, SupplierResponseDTO.class);
