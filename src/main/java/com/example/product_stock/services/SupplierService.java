@@ -43,7 +43,7 @@ public class SupplierService {
 
     @Transactional
     public SupplierResponseDTO createSupplier(SupplierRequestDTO requestDTO) {
-        if (supplierRepository.findByCpnjOrEmail(requestDTO.getCnpj(), requestDTO.getEmail()).isPresent()) {
+        if (supplierRepository.findByCnpjOrEmail(requestDTO.getCnpj(), requestDTO.getEmail()).isPresent()) {
             throw new SupplierFoundException();
         }
 
