@@ -5,7 +5,6 @@ import com.example.product_stock.dtos.UserResponseDTO;
 import com.example.product_stock.entities.User;
 import com.example.product_stock.repositories.UserRepository;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,11 +14,13 @@ import java.util.stream.Collectors;
 @Service
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final ModelMapper modelMapper;
 
-    @Autowired
-    private ModelMapper modelMapper;
+    public UserService(UserRepository userRepository, ModelMapper modelMapper) {
+        this.userRepository = userRepository;
+        this.modelMapper = modelMapper;
+    }
 
     @Transactional
     public UserResponseDTO createUser(UserRequestDTO requestDTO){

@@ -51,7 +51,7 @@ public class ProductService {
         Supplier supplier = supplierRepository.findById(requestDTO.getSupplierId())
                 .orElseThrow(() -> new IllegalArgumentException("Supplier not found with ID: " + requestDTO.getSupplierId()));
         Category category = categoryRepository.findById(requestDTO.getCategoryId())
-                .orElseThrow(() -> new IllegalArgumentException("Supplier not found with ID: " + requestDTO.getCategoryId()));
+                .orElseThrow(() -> new IllegalArgumentException("Category not found with ID: " + requestDTO.getCategoryId()));
 
         Product product = modelMapper.map(requestDTO, Product.class);
         product.setSupplier(supplier);
@@ -62,6 +62,7 @@ public class ProductService {
         return convertToResponseDTO(savedProduct);
     }
 
+    @Transactional
     public ProductResponseDTO updateProduct(UUID id, ProductRequestDTO requestDTO) {
         Product existingProduct = productRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Product not found with ID: " + id));
