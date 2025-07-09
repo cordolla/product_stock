@@ -3,7 +3,6 @@ package com.example.product_stock.controllers;
 import com.example.product_stock.dtos.ProductResponseDTO;
 import com.example.product_stock.dtos.UserRequestDTO;
 import com.example.product_stock.dtos.UserResponseDTO;
-import com.example.product_stock.entities.Product;
 import com.example.product_stock.entities.User;
 import com.example.product_stock.repositories.UserRepository;
 import com.example.product_stock.services.UserService;
@@ -12,13 +11,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
-
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -34,12 +30,8 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody UserRequestDTO userRequestDTO) {
-        try {
             UserResponseDTO createdUser = userService.createUser(userRequestDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
     }
 
     @GetMapping
