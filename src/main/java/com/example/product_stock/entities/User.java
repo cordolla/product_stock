@@ -5,8 +5,10 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,15 +34,15 @@ public class User {
     private Role role;
 
     @OneToMany(mappedBy = "user")
-    private List<StockMovement> stockMovementList;
+    private List<StockMovement> stockMovementList = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Supplier> suppliers;
+    private List<Supplier> suppliers = new ArrayList<>();
 
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    @CreationTimestamp
+    @UpdateTimestamp
     private LocalDateTime updatedAt;
 
 }
