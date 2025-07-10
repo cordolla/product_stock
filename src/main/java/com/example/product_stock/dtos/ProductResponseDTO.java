@@ -27,4 +27,5 @@ public class ProductResponseDTO {
 
     private String supplierName;
     private String categoryName;
+    private String userName;
 }
