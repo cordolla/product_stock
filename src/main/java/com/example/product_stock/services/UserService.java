@@ -6,6 +6,7 @@ import com.example.product_stock.entities.User;
 import com.example.product_stock.exceptions.UserFoundException;
 import com.example.product_stock.repositories.UserRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,10 +18,12 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, ModelMapper modelMapper) {
+    public UserService(UserRepository userRepository, ModelMapper modelMapper, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
@@ -30,6 +33,10 @@ public class UserService {
         }
 
         User user = modelMapper.map(requestDTO, User.class);
+
+        String hashedPassword = this.passwordEncoder.encode(requestDTO.getPassword());
+        user.setPassword(hashedPassword);
+
         user.setId(null);
         User savedUser = userRepository.save(user);
 
