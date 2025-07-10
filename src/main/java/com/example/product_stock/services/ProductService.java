@@ -6,10 +6,12 @@ import com.example.product_stock.dtos.ProductResponseDTO;
 import com.example.product_stock.entities.Category;
 import com.example.product_stock.entities.Product;
 import com.example.product_stock.entities.Supplier;
+import com.example.product_stock.entities.User;
 import com.example.product_stock.repositories.CategoryRepository;
 import com.example.product_stock.repositories.ProductRepository;
 
 import com.example.product_stock.repositories.SupplierRepository;
+import com.example.product_stock.repositories.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,12 +28,14 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final SupplierRepository supplierRepository;
     private final CategoryRepository categoryRepository;
+    private final UserRepository userRepository;
     private final ModelMapper modelMapper;
 
-    public ProductService(ProductRepository productRepository, SupplierRepository supplierRepository, CategoryRepository categoryRepository, ModelMapper modelMapper) {
+    public ProductService(ProductRepository productRepository, SupplierRepository supplierRepository, CategoryRepository categoryRepository, UserRepository userRepository, ModelMapper modelMapper) {
         this.productRepository = productRepository;
         this.supplierRepository = supplierRepository;
         this.categoryRepository = categoryRepository;
+        this.userRepository = userRepository;
         this.modelMapper = modelMapper;
     }
 
@@ -81,6 +85,16 @@ public class ProductService {
 
         Product updatedProduct = productRepository.save(existingProduct);
         return convertToResponseDTO(updatedProduct);
+    }
+
+    public List<ProductResponseDTO> findProductsByUserId(UUID userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Usuario não encontrado"));
+
+        return user.getSuppliers().stream()
+                .flatMap(supplier -> supplier.getProducts().stream())
+                .map(this::convertToResponseDTO)
+                .collect(Collectors.toList());
     }
 
     public void deleteProduct(UUID id) {

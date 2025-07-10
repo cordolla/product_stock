@@ -3,11 +3,9 @@ package com.example.product_stock.controllers;
 import com.example.product_stock.dtos.ProductResponseDTO;
 import com.example.product_stock.dtos.UserRequestDTO;
 import com.example.product_stock.dtos.UserResponseDTO;
-import com.example.product_stock.entities.User;
-import com.example.product_stock.repositories.UserRepository;
+import com.example.product_stock.services.ProductService;
 import com.example.product_stock.services.UserService;
 import jakarta.validation.Valid;
-import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,13 +18,11 @@ import java.util.UUID;
 public class UserController {
 
     private final UserService userService;
-    private final ModelMapper modelMapper;
-    private final UserRepository userRepository;
+    private final ProductService productService;
 
-    public UserController(UserService userService, ModelMapper modelMapper, UserRepository userRepository) {
+    public UserController(UserService userService, ProductService productService) {
         this.userService = userService;
-        this.modelMapper = modelMapper;
-        this.userRepository = userRepository;
+        this.productService = productService;
     }
 
     @PostMapping
@@ -43,14 +39,7 @@ public class UserController {
 
     @GetMapping("/{userId}/products")
     public ResponseEntity<List<ProductResponseDTO>> getProductByUser(@PathVariable UUID userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("Usuario não encontrado"));
-
-        List<ProductResponseDTO> products = user.getSuppliers().stream()
-                .flatMap(supplier -> supplier.getProducts().stream())
-                .map(product -> modelMapper.map(product, ProductResponseDTO.class))
-                .toList();
-
+        List<ProductResponseDTO> products = productService.findProductsByUserId(userId);
         return ResponseEntity.ok(products);
     }
 }
