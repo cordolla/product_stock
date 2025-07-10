@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 public class StockMovement {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
@@ -23,14 +23,24 @@ public class StockMovement {
     @Column(nullable = false)
     private MovementType type;
 
+    @Column(length = 500)
+    private String description;
+
     @CreationTimestamp
+    @Column(nullable = false, updatable = false)
     private LocalDateTime movementDate;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @Column(name = "stock_before_movement", nullable = false)
+    private Integer stockBeforeMovement;
+
+    @Column(name = "stock_after_movement", nullable = false)
+    private Integer stockAfterMovement;
 }
