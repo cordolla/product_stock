@@ -41,7 +41,6 @@ public class UserService {
         User savedUser = userRepository.save(user);
 
         return modelMapper.map(savedUser, UserResponseDTO.class);
-
     }
 
     public List<UserResponseDTO> findAllUserResponseDTO() {
