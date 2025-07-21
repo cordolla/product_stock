@@ -41,13 +41,13 @@ public class ProductService {
 
     public List<ProductResponseDTO> findAllProductsDTO() {
         return productRepository.findAll().stream()
-                .map(this::convertToResponseDTO)
+                .map(product -> modelMapper.map(product, ProductResponseDTO.class))
                 .collect(Collectors.toList());
     }
 
     public Optional<ProductResponseDTO> findProductDTOById(UUID id){
         return productRepository.findById(id)
-                .map(this::convertToResponseDTO);
+                .map(product -> modelMapper.map(product, ProductResponseDTO.class));
     }
 
     @Transactional
@@ -63,7 +63,7 @@ public class ProductService {
         product.setId(null);
 
         Product savedProduct = productRepository.save(product);
-        return convertToResponseDTO(savedProduct);
+        return modelMapper.map(savedProduct, ProductResponseDTO.class);
     }
 
     @Transactional
@@ -84,7 +84,7 @@ public class ProductService {
         modelMapper.map(requestDTO, existingProduct);
 
         Product updatedProduct = productRepository.save(existingProduct);
-        return convertToResponseDTO(updatedProduct);
+        return modelMapper.map(updatedProduct, ProductResponseDTO.class);
     }
 
     public List<ProductResponseDTO> findProductsByUserId(UUID userId) {
@@ -93,7 +93,7 @@ public class ProductService {
 
         return user.getSuppliers().stream()
                 .flatMap(supplier -> supplier.getProducts().stream())
-                .map(this::convertToResponseDTO)
+                .map(product -> modelMapper.map(product, ProductResponseDTO.class))
                 .collect(Collectors.toList());
     }
 
@@ -105,11 +105,6 @@ public class ProductService {
     }
 
 
-    private ProductResponseDTO convertToResponseDTO(Product product) {
-        ProductResponseDTO dto = modelMapper.map(product, ProductResponseDTO.class);
-
-        return dto;
-    }
 
 
 }
