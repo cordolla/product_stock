@@ -25,17 +25,10 @@ public class CategoryService {
         this.modelMapper = modelMapper;
     }
 
-    public List<CategoryDTO> findAllCategoriesDTO() {
-        return categoryRepository.findAll().stream()
-                .map(category -> modelMapper.map(category, CategoryDTO.class))
-                .collect(Collectors.toList());
-    }
-
     public Optional<CategoryResponseDTO> findCategoryResponseDTOById(UUID id) {
         return categoryRepository.findById(id)
                 .map(category -> modelMapper.map(category, CategoryResponseDTO.class));
     }
-
 
     @Transactional
     public CategoryResponseDTO createCategory(CategoryRequestDTO requestDTO) {
@@ -65,7 +58,7 @@ public class CategoryService {
         categoryRepository.deleteById(id);
     }
 
-    public List<CategoryResponseDTO> findAllCategoriesResponseDTO() {
+    public List<CategoryResponseDTO> findAll() {
         return categoryRepository.findAll().stream()
                 .map(category -> modelMapper.map(category, CategoryResponseDTO.class))
                 .collect(Collectors.toList());

@@ -30,12 +30,6 @@ public class SupplierService {
         this.userRepository = userRepository;
     }
 
-    public List<SupplierDTO> findAllSuppliersDTO() {
-        return supplierRepository.findAll().stream()
-                .map(supplier -> modelMapper.map(supplier, SupplierDTO.class))
-                .collect(Collectors.toList());
-    }
-
     public Optional<SupplierResponseDTO> findSupplierResponseDTOById(UUID id) {
         return supplierRepository.findById(id)
                 .map(supplier -> modelMapper.map(supplier, SupplierResponseDTO.class));
@@ -79,7 +73,7 @@ public class SupplierService {
     }
 
 
-    public List<SupplierResponseDTO> findAllSuppliersResponseDTO() {
+    public List<SupplierResponseDTO> findAll() {
         return supplierRepository.findAll().stream()
                 .map(supplier -> modelMapper.map(supplier, SupplierResponseDTO.class))
                 .collect(Collectors.toList());

@@ -23,7 +23,7 @@ public class CategoryController {
 
     @GetMapping
     public ResponseEntity<List<CategoryResponseDTO>> getAllCategories() {
-        List<CategoryResponseDTO> categories = categoryService.findAllCategoriesResponseDTO();
+        List<CategoryResponseDTO> categories = categoryService.findAll();
         return ResponseEntity.ok(categories);
     }
 
